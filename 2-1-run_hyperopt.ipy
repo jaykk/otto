@@ -1,17 +1,25 @@
 import sklearn.ensemble
+import sklearn.gaussian_process
 from sklearn.cross_validation import cross_val_score
+from sklearn.cross_validation import StratifiedShuffleSplit
+from sklearn import linear_model
 import hyperopt
+import sys
+""" Doc string"""
 
 def run_cls(settings):
     print(settings)
+    sys.stdout.flush()
     clsif = settings.pop('type')
     clsif_opts = settings['options']
     for kys, it in zip(clsif_opts.keys(),clsif_opts.values()):
-        if (it.is_integer()):
-            settings['options'][kys] = int(it)
+        if not isinstance(it, basestring):
+            if (it.is_integer()):
+                settings['options'][kys] = int(it)
 
+    cv = StratifiedShuffleSplit(labels, n_iter = 5, test_size = 0.9, random_state = 2)
     rfc = clsif(**clsif_opts)
-    c_val = -1 * cross_val_score(rfc,data.iloc[:,1:-1],le.transform(data.iloc[:,-1]),scoring='log_loss')
+    c_val = -1 * cross_val_score(rfc,data_reduced,labels,scoring='log_loss',cv=cv)
     print(c_val)
     return {
         'loss': np.mean(c_val),
@@ -24,25 +32,42 @@ trials = hyperopt.Trials()
 hyperopt.fmin(run_cls,
               space=hyperopt.hp.choice('Classifier',
                                         [
-                                        {'type': sklearn.ensemble.RandomForestClassifier,
-                                         'options': {
-                                            'n_estimators': hyperopt.hp.quniform('rf_n_est', 10,650, 1),
-                                            'max_features': hyperopt.hp.uniform('rf_max_f', 0.01, 0.6),
-                                            'max_depth': hyperopt.hp.quniform('rf_max_d', 1,50,1),
-                                            'n_jobs': 8.0,
-                                        }},
-                                        {'type': sklearn.ensemble.AdaBoostClassifier,
-                                         'options': {'n_estimators': hyperopt.hp.quniform('ada_n_est', 10, 280, 5)}},
-                                        {'type': sklearn.ensemble.GradientBoostingClassifier,
-                                         'options': {'n_estimators': hyperopt.hp.quniform('gd_n_est', 10, 280, 5)}},
-                                        {'type': sklearn.ensemble.ExtraTreesClassifier,
-                                         'options': {
-                                            'n_estimators': hyperopt.hp.quniform('ext_n_est', 10, 480, 5),
-                                            'max_features': hyperopt.hp.uniform('ext_max_f', 0.01, 1),
-                                            'max_depth': hyperopt.hp.quniform('ext_max_d', 1,40,1),
-                                            'n_jobs': 8.0,
-                                        }},
+                                        {
+                                        'type': sklearn.gaussian_process.GaussianProcess,
+                                        'options':
+                                            {
+                                                'theta0': hyperopt.hp.uniform('gp_theta0',0.3, 0.6),
+                                                'storage_mode': "light",
+                                            },
+                                        },
+                                        #{'type': sklearn.ensemble.RandomForestClassifier,
+                                        # 'options': {
+                                        #    'n_estimators': hyperopt.hp.quniform('rf_n_est', 10,750, 1),
+                                        #    'max_features': hyperopt.hp.uniform('rf_max_f', 0.01, 0.6),
+                                        #    'max_depth': hyperopt.hp.quniform('rf_max_d', 1,50,1),
+                                        #    'n_jobs': 8.0,
+                                        #    }
+                                        #},
+                                        #{'type': sklearn.ensemble.AdaBoostClassifier,
+                                        # 'options': {
+                                        #     'n_estimators': hyperopt.hp.quniform('ada_n_est', 10, 380, 5),
+                                        #     }
+                                        #},
+                                        #{'type': sklearn.ensemble.GradientBoostingClassifier,
+                                         #'options': {
+                                             #'n_estimators': hyperopt.hp.quniform('gd_n_est', 10, 380, 5),
+                                             #'max_features': hyperopt.hp.uniform('gd_max_f', 0.01, 0.7),
+                                             #}
+                                        #},
+                                        #{'type': sklearn.ensemble.ExtraTreesClassifier,
+                                        # 'options': {
+                                        #    'n_estimators': hyperopt.hp.quniform('ext_n_est', 10, 480, 5),
+                                        #    'max_features': hyperopt.hp.uniform('ext_max_f', 0.01, 1),
+                                        #    'max_depth': hyperopt.hp.quniform('ext_max_d', 1,40,1),
+                                        #    'n_jobs': 8.0,
+                                        #    }
+                                        #},
                                         ]),
               algo = hyperopt.tpe.suggest,
-              max_evals=30,
+              max_evals=1,
               trials = trials)
