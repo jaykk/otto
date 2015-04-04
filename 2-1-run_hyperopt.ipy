@@ -17,10 +17,10 @@ def run_cls(settings):
             if (it.is_integer()):
                 settings['options'][kys] = int(it)
 
-    cv = StratifiedShuffleSplit(labels, n_iter = 5, test_size = 0.9, random_state = 2)
     rfc = clsif(**clsif_opts)
-    c_val = -1 * cross_val_score(rfc,data_reduced,labels,scoring='log_loss',cv=cv)
+    c_val = -1 * cross_val_score(rfc, data, labels, scoring='log_loss')
     print(c_val)
+    print("")
     return {
         'loss': np.mean(c_val),
         'status': hyperopt.STATUS_OK,
@@ -32,33 +32,35 @@ trials = hyperopt.Trials()
 hyperopt.fmin(run_cls,
               space=hyperopt.hp.choice('Classifier',
                                         [
-                                        {
-                                        'type': sklearn.gaussian_process.GaussianProcess,
-                                        'options':
-                                            {
-                                                'theta0': hyperopt.hp.uniform('gp_theta0',0.3, 0.6),
-                                                'storage_mode': "light",
-                                            },
-                                        },
-                                        #{'type': sklearn.ensemble.RandomForestClassifier,
-                                        # 'options': {
-                                        #    'n_estimators': hyperopt.hp.quniform('rf_n_est', 10,750, 1),
-                                        #    'max_features': hyperopt.hp.uniform('rf_max_f', 0.01, 0.6),
-                                        #    'max_depth': hyperopt.hp.quniform('rf_max_d', 1,50,1),
-                                        #    'n_jobs': 8.0,
-                                        #    }
+                                        #{
+                                        #'type': linear_model.LogisticRegression,
+                                        #'options':
+                                        #    {
+                                        #        'C': hyperopt.hp.uniform('logr_c',0.5, 1.5),
+                                        #        'penalty': 'l2',
+                                        #        #'max_iter': 300.0,
+                                        #        #'solver': hyperopt.hp.choice('logr_solver', ['newton-cg', 'lbfgs']),
+                                        #    },
                                         #},
+                                        {'type': sklearn.ensemble.RandomForestClassifier,
+                                         'options': {
+                                            'n_estimators': hyperopt.hp.quniform('rf_n_est', 10,750, 1),
+                                            'max_features': hyperopt.hp.uniform('rf_max_f', 0.01, 0.5),
+                                            'max_depth': hyperopt.hp.quniform('rf_max_d', 1,20,1),
+                                            'n_jobs': 8.0,
+                                            }
+                                        },
                                         #{'type': sklearn.ensemble.AdaBoostClassifier,
                                         # 'options': {
                                         #     'n_estimators': hyperopt.hp.quniform('ada_n_est', 10, 380, 5),
                                         #     }
                                         #},
-                                        #{'type': sklearn.ensemble.GradientBoostingClassifier,
-                                         #'options': {
-                                             #'n_estimators': hyperopt.hp.quniform('gd_n_est', 10, 380, 5),
-                                             #'max_features': hyperopt.hp.uniform('gd_max_f', 0.01, 0.7),
-                                             #}
-                                        #},
+                                        {'type': sklearn.ensemble.GradientBoostingClassifier,
+                                         'options': {
+                                             'n_estimators': hyperopt.hp.quniform('gd_n_est', 10, 480, 5),
+                                             'max_features': hyperopt.hp.uniform('gd_max_f', 0.01, 0.4),
+                                             }
+                                        },
                                         #{'type': sklearn.ensemble.ExtraTreesClassifier,
                                         # 'options': {
                                         #    'n_estimators': hyperopt.hp.quniform('ext_n_est', 10, 480, 5),
@@ -69,5 +71,5 @@ hyperopt.fmin(run_cls,
                                         #},
                                         ]),
               algo = hyperopt.tpe.suggest,
-              max_evals=1,
+              max_evals=90,
               trials = trials)
