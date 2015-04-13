@@ -15,7 +15,7 @@ with open(zip_file_name, 'rb') as fh:
 
 #data.drop('id', axis=1, inplace=True)
 labels = le.fit_transform(data.iloc[:,-1])
-data[:,-1] = labels
+data.iloc[:,-1] = labels
 data = shuffle(data)
 labels = data[:,-1]
 data = data[1:-1] #remove id and classes
