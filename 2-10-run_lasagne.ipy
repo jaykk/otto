@@ -35,12 +35,12 @@ net1 = NeuralNet(
         ],
     # layer parameters:
     input_shape=(None, 93),
-    hidden1_num_units=380,
+    hidden1_num_units=500,
     dropout1_p=0.5,
-    hidden2_num_units=400,
-    dropout2_p=0.5,
-    hidden3_num_units=200,
-    dropout3_p=0.3,
+    hidden2_num_units=350,
+    dropout2_p=0.6,
+    #hidden3_num_units=400,
+    #dropout3_p=0.3,
 #    dropout3_p=0.5,
 #    hidden1_nonlinearity=lasagne.nonlinearities.sigmoid,
     output_nonlinearity=lasagne.nonlinearities.softmax,  # output layer uses identity function
@@ -59,7 +59,7 @@ net1 = NeuralNet(
         ],
 
     regression=False,  # flag to indicate we're dealing with classification problem
-    max_epochs=3000,  # we want to train this many epochs
+    max_epochs=200,  # we want to train this many epochs
     verbose=1,
     )
 
