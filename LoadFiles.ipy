@@ -14,4 +14,4 @@ with open(zip_file_name, 'rb') as fh:
 labels = le.fit_transform(data.iloc[:,-1])
 data.drop('id', axis=1, inplace=True)
 scaler = preprocessing.StandardScaler()
-X = scaler.fit_transform(data[:,0:-1])
+X = scaler.fit_transform(data.drop('class'))
