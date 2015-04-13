@@ -11,10 +11,13 @@ file_name = "train.csv"
 zip_file_name = "./dataFiles/train.csv.zip"
 with open(zip_file_name, 'rb') as fh:
     zfile = zipfile.ZipFile(fh)
-    data = shuffle(pd.read_csv(zfile.open(file_name)))
+    data = pd.read_csv(zfile.open(file_name))
 
 #data.drop('id', axis=1, inplace=True)
 labels = le.fit_transform(data[:,-1])
+data[:,-1] = labels
+data = shuffle(data)
+labels = data[:,-1]
 data = data[1:-1] #remove id and classes
 
 scaler = preprocessing.StandardScaler()
