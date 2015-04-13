@@ -13,3 +13,4 @@ with open(zip_file_name, 'rb') as fh:
     data = pd.read_csv(zfile.open(file_name))
 labels = le.fit_transform(data.iloc[:,-1])
 data.drop('id', axis=1, inplace=True)
+X = scaler.fit_transform(data[:,0:-1])
