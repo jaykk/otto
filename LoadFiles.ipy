@@ -3,6 +3,7 @@ import zipfile
 import numpy as np
 import pandas as pd
 from sklearn import preprocessing
+from sklearn.utils import shuffle
 
 le = preprocessing.LabelEncoder()
 
@@ -10,7 +11,7 @@ file_name = "train.csv"
 zip_file_name = "./dataFiles/train.csv.zip"
 with open(zip_file_name, 'rb') as fh:
     zfile = zipfile.ZipFile(fh)
-    data = pd.read_csv(zfile.open(file_name))
+    data = shuffle(pd.read_csv(zfile.open(file_name)))
 labels = le.fit_transform(data.iloc[:,-1])
 data.drop('id', axis=1, inplace=True)
 scaler = preprocessing.StandardScaler()
