@@ -64,6 +64,6 @@ net1 = NeuralNet(
     )
 
 #print(data[0])
-print(type(labels))
-print(le.classes_)
+#print(type(labels))
+#print(le.classes_)
 net1.fit(np.array(X, dtype=np.float32), np.array(labels,dtype=np.int32))
