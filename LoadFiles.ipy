@@ -11,7 +11,7 @@ file_name = "train.csv"
 zip_file_name = "./dataFiles/train.csv.zip"
 with open(zip_file_name, 'rb') as fh:
     zfile = zipfile.ZipFile(fh)
-    data = pd.read_csv(zfile.open(file_name))
+    data = shuffle(pd.read_csv(zfile.open(file_name)))
 
 #data.drop('id', axis=1, inplace=True)
 labels = le.fit_transform(data[:,-1])
