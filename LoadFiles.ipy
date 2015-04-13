@@ -18,7 +18,7 @@ labels = le.fit_transform(data.iloc[:,-1])
 data.iloc[:,-1] = labels
 data = shuffle(data)
 labels = data[:,-1]
-data = data[1:-1] #remove id and classes
+data = data[:,1:-1] #remove id and classes
 
 scaler = preprocessing.StandardScaler()
 X = scaler.fit_transform(data)
