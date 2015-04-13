@@ -35,7 +35,7 @@ net1 = NeuralNet(
         ],
     # layer parameters:
     input_shape=(None, 93),
-    hidden1_num_units=500,
+    hidden1_num_units=400,
     dropout1_p=0.5,
     hidden2_num_units=250,
     dropout2_p=0.5,
