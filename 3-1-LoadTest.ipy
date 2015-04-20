@@ -1,0 +1,11 @@
+import csv
+import zipfile
+import pandas as pd
+
+file_name = "test.csv"
+zip_file_name = "./dataFiles/test.csv.zip"
+with open(zip_file_name, 'rb') as fh:
+    zfile = zipfile.ZipFile(fh)
+    test_data = pd.read_csv(zfile.open(file_name))
+test_data_ids = test_data['id']
+test_data = test_data.drop(labels=['id'],axis=1)
