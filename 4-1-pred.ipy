@@ -1,0 +1,2 @@
+preds = net1.predit_proba(test_data)
+np.hstack((test_data_ids.apply(int)[:,np.newaxis],preds)).tofile("preds.csv",sep=",")
